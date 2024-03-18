@@ -16,7 +16,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-wp","--wandb_project",help="Project name used to track experiments in Weights & Biases dashboard",default="DL_Assigment_1")
 parser.add_argument("-we","--wandb_entity",help="Wandb Entity used to track experiments in the Weights & Biases dashboard.",default="cs23m074")
 parser.add_argument("-d","--dataset",help=f"choices: ['fashion_mnist', 'mnist']",choices=['fashion_mnist','mnist'],default='fashion_mnist')
-parser.add_argument("-e","--epochs",help="Number of epochs to train neural network.",choices=['5','10'],default=7)
+parser.add_argument("-e","--epochs",help="Number of epochs to train neural network.",choices=['5','10'],default=5)
 parser.add_argument("-b","--batch_size",help="Batch size used to train neural network.",choices=['16','32','64'],default=32)
 parser.add_argument("-l","--loss",help=f"choices: ['cross_entropy', 'mean_squared_error']",choices=['cross_entropy', 'mean_squared_error'],default='cross_entropy')
 parser.add_argument("-o","--optimizer",help=f"choices: ['sgd', 'momentum', 'nag', 'rmsprop', 'adam', 'nadam']",choices=['sgd', 'momentum', 'nag', 'rmsprop', 'adam', 'nadam'],default='nadam')
@@ -239,7 +239,7 @@ class neural_network:
     while i < temp:
       Y = np.dot(input, self.W[i].T) + self.B[i]
       
-      '''Not normalizing'''
+      
       if i < len(size)-2:
         if i < len(self.preactivation):
           self.preactivation[i] = Y
@@ -327,7 +327,7 @@ class neural_network:
       print(i+1, "Iteration No : ", "\t Validate Loss\t", loss_val)
       print(i+1, "Iteration No : ", "\t Train Accuracy\t", accur_train)
       print(i+1, "Iteration No : ", "\t Validate Accuracy\t", accur_val)
-      print("---------------------------------------------------------")
+      print("-*-*-*-*-*-*-*-*-*-*-*-*--*-*-*-*-*--*-*-*-*-*-*-*-*-*")
 
   def batch_grad_descent(self, x_train, y_train, x_test, y_test, no_of_classes, layers, activation_function, eta, batch_size, n_iterations, loss_func, lambd, do_wandb_log):
     x_batch, y_batch = batch_converter(x_train, y_train, batch_size)
@@ -736,15 +736,7 @@ class neural_network:
     temp = ((y.shape[0] - err_count)/y.shape[0])*100
     return temp
     
-  def PlotError(self, ErrorSum):
-    Iter = []
-    for i in range(len(ErrorSum)):
-      Iter.append(i)
-    plt.plot(Iter,ErrorSum)
-    plt.title('Error v/s Iteration')
-    plt.xlabel('No of Iterations')
-    plt.ylabel('Error')
-    plt.show()
+  
 
 
 def main(x_train1, y_train1, x_val1, y_val1, input_size1, no_hidden_layers1, hidden_layer_size1, no_of_classes1, wt_initialisation1, optimiser1, activation_function1, batch_size1, eta1, epoch1, momentum1, beta1, beta11, beta21, loss_func1, lambd1, do_wandb_log1, plot_conf_mat1):
@@ -778,8 +770,6 @@ def main(x_train1, y_train1, x_val1, y_val1, input_size1, no_hidden_layers1, hid
       y_pred, y = object_neural_network.nadam_gradient_descent(x_train, y_train, x_val, y_val, no_of_classes, layers, activation_function, batch_size, eta, epoch, beta1, beta2, loss_func, lambd, do_wandb_log)
 
     if plot_conf_mat == True:
-      y_pred = np.argmax(y_pred, axis = 1)
-      print(y_pred.shape, y.shape)
       object_neural_network.Confunsion_Matrix_Plot(y_pred, y)
 
 # main(x_train, y_train, x_val, y_val, input_size, no_hidden_layers, hidden_layer_size, no_of_classes, wt_initialisation, optimiser, activation_function, batch_size, eta, epoch, momentum, beta, beta1, beta2, loss_func, lambd, do_wandb_log, plot_conf_mat)
