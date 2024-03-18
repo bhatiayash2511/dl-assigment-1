@@ -1,3 +1,4 @@
+# Importing libraries
 import numpy as np
 import pandas as pd
 import math
@@ -9,7 +10,7 @@ from keras.datasets import fashion_mnist
 from keras.datasets import mnist
 
 
-#importing library as well loading datasets and spliting
+
 parser = argparse.ArgumentParser()
 parser.add_argument("-wp","--wandb_project",help="Project name used to track experiments in Weights & Biases dashboard",default="DL_Assigment_1")
 parser.add_argument("-we","--wandb_entity",help="Wandb Entity used to track experiments in the Weights & Biases dashboard.",default="cs23m074")
@@ -34,6 +35,7 @@ args = parser.parse_args()
 
 
 
+# Loading Dataset according to argparser and splitting
 
 print("Loading Data...")
 if args.dataset == "fashion_mnist":
@@ -45,7 +47,8 @@ else:
 x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.1)
 print(" Dataset Loaded !!")
 
-# normalizing values and reshaping training values
+# Normalizing values and reshaping training values
+
 def normalizeX(x_train, x_test, x_val):
   x_train = x_train / 255
   x_test = x_test / 255
@@ -153,7 +156,7 @@ def batch_converter(x1, y1, batch_size1):
         x_batch.append(x1)
         y_batch.append(y1)
         i += 1
-    # jo datapoints last me bach jayenge wo yaha pe add kr rhe
+    
     temp = no_batches * batch_size
     if temp != x_train.shape[0]:
         x1 = np.array(x_train[temp :])
@@ -172,7 +175,7 @@ def squared_error( y_train, y_hat, no_of_classes):
         i+=1
     return loss / y_train.shape[0]
 
-class NN:
+class neural_network:
   def __init__(self, s, weight_initialisation):
     self.W, self.B, self.preactivation, self.activation = [],[],[],[]
     self.initializer = weight_initialisation
@@ -191,7 +194,7 @@ class NN:
         b = np.random.uniform(-n , n, (self.network[i]))
         self.B.append(b)
         i += 1
-    # Random weight Initialisation
+    # Random weight Initialise
     elif self.initializer.upper() != "XAVIER":
       i = 1
       while i < len(self.network):
@@ -201,7 +204,7 @@ class NN:
         self.W.append(w)
         i += 1
 
-  # not normalizing
+  
 
   def loss_function(self, y_train, y_hat, no_of_classes, loss_func, lambd):
     temp = y_train.shape[0]
@@ -214,7 +217,7 @@ class NN:
 
 
 
-  # hadmard gone
+  
 
 
   def l2_regularize(self, lambd, batch_size):
@@ -227,7 +230,7 @@ class NN:
     return temp
 
   def forward(self, input, size1, activation_function1):
-    # Calculating for the hiddlen layers
+    # Hiddlen layers
     size, activation_function = size1, activation_function1
     i = 0
     temp2 = activation_function.upper()
@@ -241,7 +244,7 @@ class NN:
           self.preactivation[i] = Y
         else:
           self.preactivation.append(Y)
-        # Y_dash = self.normalize(Y)
+        
         if temp2 == "RELU":
           Z = relu(Y)
         if temp2 =="SIGMOID":
@@ -256,9 +259,9 @@ class NN:
           self.activation.append(Z)
         input = Z
       else:
-        #Calculating for the output layer.
+        # Output layer.
         Y = np.dot(input, self.W[i].T) + self.B[i]
-        # Y = self.normalize(Y)
+        
         temp4 =len(self.preactivation)
         if i < temp4:
           self.preactivation[i] = Y
@@ -286,16 +289,16 @@ class NN:
 
       temp = -(y_onehot - ac[temp2])
       grad_a.append(temp)
-    else: #MSE
-      grad_a.append((ac[temp2] - y_onehot) * softmax_derivative(ac[temp2]))#ac[len(ac)-1]*(1 - ac[len(ac)-1]))
+    else:
+      grad_a.append((ac[temp2] - y_onehot) * softmax_derivative(ac[temp2]))
     i = no_layers - 2
     while i  > -1:
       temp3 = no_layers-2-i
       if i == 0:
-        dw = (grad_a[temp3].T @ x) #/ y.shape[0]
+        dw = (grad_a[temp3].T @ x)
         db = np.sum(grad_a[temp3],axis=0)/y.shape[0]
       elif i > 0:
-        dw = (grad_a[temp3].T @ ac[i-1])#/ y.shape[0]
+        dw = (grad_a[temp3].T @ ac[i-1])
         db = np.sum(grad_a[temp3],axis=0)/ y.shape[0]
         dh_1 = grad_a[temp3] @ self.W[i]
         sig = 0
@@ -342,7 +345,6 @@ class NN:
         preac, ac, grad_w, grad_b = f(xb, layers, activation_function, yb, no_of_classes, preac, ac, loss_func)
         l = 0
         while l < length-1:
-          # print("shape",self.W[l].shape, grad_w[length-l-2].shape)
           self.W[l] += -(eta * grad_w[length-l-2] + eta * lambd * self.W[l])
           self.B[l] += -eta * grad_b[length-l-2]
           l += 1
@@ -756,28 +758,28 @@ def main(x_train1, y_train1, x_val1, y_val1, input_size1, no_hidden_layers1, hid
 
     x_train, y_train, x_val, y_val, input_size, no_hidden_layers, hidden_layer_size, no_of_classes, wt_initialisation, optimiser, activation_function, batch_size, eta, epoch, momentum, beta, beta1, beta2, loss_func, lambd, do_wandb_log, plot_conf_mat = x_train1, y_train1, x_val1, y_val1, input_size1, no_hidden_layers1, hidden_layer_size1, no_of_classes1, wt_initialisation1, optimiser1, activation_function1, batch_size1, eta1, epoch1, momentum1, beta1, beta11, beta21, loss_func1, lambd1, do_wandb_log1, plot_conf_mat1
 
-    nn = NN(layers, wt_initialisation)
+    object_neural_network = neural_network(layers, wt_initialisation)
     if com == "SGD":
-      y_pred, y = nn.batch_grad_descent(x_train, y_train, x_val, y_val, no_of_classes, layers, activation_function, eta, batch_size, epoch, loss_func, lambd, do_wandb_log)
+      y_pred, y = object_neural_network.batch_grad_descent(x_train, y_train, x_val, y_val, no_of_classes, layers, activation_function, eta, batch_size, epoch, loss_func, lambd, do_wandb_log)
     
     if com == "MOMENTUM":
-      y_pred, y = nn.momentum_grad_descent(x_train, y_train, x_val, y_val, no_of_classes, layers, activation_function, batch_size, eta, epoch, momentum, loss_func, lambd, do_wandb_log)
+      y_pred, y = object_neural_network.momentum_grad_descent(x_train, y_train, x_val, y_val, no_of_classes, layers, activation_function, batch_size, eta, epoch, momentum, loss_func, lambd, do_wandb_log)
     if com == "NAG":
-      y_pred, y = nn.nesterov_gradient_descent(x_train, y_train, x_val, y_val, no_of_classes, layers, activation_function, batch_size, eta, epoch, momentum, loss_func, lambd, do_wandb_log)
+      y_pred, y = object_neural_network.nesterov_gradient_descent(x_train, y_train, x_val, y_val, no_of_classes, layers, activation_function, batch_size, eta, epoch, momentum, loss_func, lambd, do_wandb_log)
 
     if com == "RMSPROP":
-      y_pred, y = nn.rmsprop_gradient_descent(x_train, y_train, x_val, y_val, no_of_classes, layers, activation_function, batch_size, eta, epoch, beta, loss_func, lambd, do_wandb_log)
+      y_pred, y = object_neural_network.rmsprop_gradient_descent(x_train, y_train, x_val, y_val, no_of_classes, layers, activation_function, batch_size, eta, epoch, beta, loss_func, lambd, do_wandb_log)
 
     if com == "ADAM":
-      y_pred, y = nn.adam_gradient_descent(x_train, y_train, x_val, y_val, no_of_classes, layers, activation_function, batch_size, eta, epoch, beta1, beta2, loss_func, lambd, do_wandb_log)
+      y_pred, y = object_neural_network.adam_gradient_descent(x_train, y_train, x_val, y_val, no_of_classes, layers, activation_function, batch_size, eta, epoch, beta1, beta2, loss_func, lambd, do_wandb_log)
 
     if com == "NADAM":
-      y_pred, y = nn.nadam_gradient_descent(x_train, y_train, x_val, y_val, no_of_classes, layers, activation_function, batch_size, eta, epoch, beta1, beta2, loss_func, lambd, do_wandb_log)
+      y_pred, y = object_neural_network.nadam_gradient_descent(x_train, y_train, x_val, y_val, no_of_classes, layers, activation_function, batch_size, eta, epoch, beta1, beta2, loss_func, lambd, do_wandb_log)
 
     if plot_conf_mat == True:
       y_pred = np.argmax(y_pred, axis = 1)
       print(y_pred.shape, y.shape)
-      nn.Confunsion_Matrix_Plot(y_pred, y)
+      object_neural_network.Confunsion_Matrix_Plot(y_pred, y)
 
 # main(x_train, y_train, x_val, y_val, input_size, no_hidden_layers, hidden_layer_size, no_of_classes, wt_initialisation, optimiser, activation_function, batch_size, eta, epoch, momentum, beta, beta1, beta2, loss_func, lambd, do_wandb_log, plot_conf_mat)
 
