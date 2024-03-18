@@ -1,101 +1,55 @@
-# **Fashion MNIST classification using a "numpy" Bare Bones Feed forward Neural Network**
+# Feed Forward Neural Network Assignment
 
-This folder contains the code base for Assignment 1 as part of CS6910: Deep Learning Fundamentals course at IIT Madras during the Spring of 2021.
+## Overview
 
-The wandb report can be found in the following link:
+This repository contains code for a feed forward neural network assignment. The main objective of this assignment is to build a neural network from scratch to predict classes in the Fashion MNIST dataset.
 
-https://api.wandb.ai/links/cs23m074/6tuftx47
+Please note that the Jupyter Notebook file `DL_Assignment1_q2_checking_mycode.ipynb` is not part of the assignment. It is included for learning purposes and does not contribute to the assignment's requirements.
 
-=======
-The wandb report can be found in the following link: 
-https://api.wandb.ai/links/cs23m074/6tuftx47
+## Assignment Structure
 
-The problem statement involves building and training a 'plain vanilla' Feed Forward Neural Network from scratch using primarily Numpy package in Python.  
+The assignment is structured as follows:
 
-The code base now has the following features:
-1. Forward and backward propagation are hard coded using Matrix operations. The weights and biases are stored separately as dictionaries to go hand in hand with the notation used in class.
-2. A neural network class to instantiate the neural network object for specified set of hyperparameters, namely the number of layers, hidden neurons, activation function, optimizer, weight decay,etc.
-3. The optimisers, activations and their gradients are passed through dictionaries configured as attributed within the FeedForwardNeuralNetwork class. 
-4. Activation functions are defined separately in the utility/activations.py file. 
-5. A colab notebook containing the entire code to train and validate the model from scratch. 
+- `DL_A_Q1.ipynb`: Implementation of Question 1.
+- `DL_A_Q2_Q3_Q7_implemented.ipynb`: Implementation of Questions 2, 3, and 7. This notebook is integrated with WandB.
+- `train.py`: Python script with WandB integration and argparse functionality for easy parameter passing.
 
-## Dataset
+## Neural Network Class and Utility Functions
 
-Fashion MNIST data set has been used here in this assignment instead of the traditional MNIST hand written digits dataset. 
-Train  - 60000
-Test - 20000
-Validation - 6000
+The core of the assignment includes:
+- `neural_network` class: Implements weight initialization, backpropagation, forward propagation, and optimizer functions (SGD, NAG, Momentum, RMSProp, Adam, Nadam).
+- Utility functions: Activation functions (sigmoid, relu, tanh), testing accuracy function, plotting confusion matrix of y_pred vs y and so on.
 
-For the hyper parameter optimisation stage, 10% of the randomly shuffled training data set (around 6000 images and corresponding labels) are kept aside for validation for each hyperparameter configuration while the model is trained on the remaining 54000 images from the randomly shuffled training data set. 
+## Data Preparation
 
-Once the best configuration is identified with the help of wandb wither using Random search or Bayesian optimisation, the full training dataset is used to train the best model configuration and the test accuracy is calculated. The resulting confusion matrix is plotted therafter.  
+The Fashion MNIST dataset is used for this assignment. Before training the neural network, the dataset is split, and data values are normalized.
 
-```
-sweep_config = {
-  "name": "Random Sweep", #(or) Bayesian Sweep (or) Grid search
-  "method": "random", #(or) bayes (or) grid
-  "metric":{
-  "name": "validationaccuracy",
-  "goal": "maximize"
-  },
-  "parameters": {
-        "max_epochs": {
-            "values": [5, 10]
-        },
+## Running the Code
 
-        "initializer": {
-            "values": ["RANDOM", "XAVIER", "HE"]
-        },
+To run the assignment code, follow these steps:
+1. Clone this repository to your local machine.
+2. Install the required dependencies, such as NumPy, Matplotlib, WandB, etc.
+3. For `train.py`, use argparse to pass arguments for different configurations. Example:
 
-        "num_layers": {
-            "values": [3, 4, 5]
-        },
+python train.py -wp DL_Assignment_1 -we cs23m074 -d fashion_mnist -e 7 -b 32 -l cross_entropy -o nadam -lr 1e-3 -m 0.5 -beta 0.5 -beta1 0.5 -beta2 0.5 -eps 0.000001 -w_d 0 -w_i random -nhl 3 -sz 128 -a ReLU
 
+# Dependencies
+requirements.txt file is provided to install necessary dependencies
 
-        "num_hidden_neurons": {
-            "values": [32, 64, 128]
-        },
+pip install -r requirements.txt
 
-        "activation": {
-            "values": [ 'TANH',  'SIGMOID', 'RELU']
-        },
+Execuete this in command prompt and Pip will start downloading and installing each package listed in the requirements.txt file. 
 
-        "learning_rate": {
-            "values": [0.001, 0.0001]
-        },
+## Sweeping Configurations
 
+In `DL_A_Q2_Q3_Q7_implemented.ipynb`, a sweep_config is provided for experimenting with different configurations. The sweep_config includes parameters for dataset, epochs, batch size, loss, optimizer, learning rate, momentum, beta, beta1, beta2, epsilon, weight decay, weight initialization, number of layers, hidden size, and activation function.
 
-        "weight_decay": {
-            "values": [0, 0.0005,0.5]
-        },
+## Libraries Used
 
-        "optimizer": {
-            "values": ["SGD", "MGD", "NAG", "RMSPROP", "ADAM","NADAM"]
-        },
+The code utilizes libraries such as NumPy, pandas, matplotlib, WandB, argparse, scikit-learn, and Keras for data manipulation, visualization, model training, and evaluation.
 
-        "batch_size": {
-            "values": [16, 32, 64]
-        }
+## Contact Information
 
+For any questions or issues, please contact Yash Bhatia CS23M074 cs23m074@smail.iitm.ac.in +91 9039563022 
 
-    }
-}
-```
-
-One can choose to select / modify/omit any of the hyperparameters above in the config dictionary.
-
-
-## Results:
-For the plain vanilla feed forward neural network implemented, the maximum test accuracy reported was 81.53% on the Fashion MNIST dataset and ~92.56% on the MNIST hand written datasets.
-One of the model configuration chosen to be  the best is as follows:
-
-- Number of Hidden Layers - 3
-- Number of Hidden Neurons - 24
-- L2 Regularisation - Yes
-- Weight Decay - 0.0005
-- Activation - tanh
-- Initialisation - Xavier
-- Optimiser - NADAM
-- Learning Rate - 0.0002
-- Batch size - 64
-- Epochs - 10
+Happy coding!

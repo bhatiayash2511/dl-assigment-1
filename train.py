@@ -8,6 +8,7 @@ import argparse
 from sklearn.model_selection import train_test_split
 from keras.datasets import fashion_mnist
 from keras.datasets import mnist
+from sklearn.metrics import confusion_matrix
 
 
 
